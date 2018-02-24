@@ -10,8 +10,12 @@ nb_classes = 43
 epochs = 10
 batch_size = 128
 
-with open('./train.p', 'rb') as f:
+with open('../CarND-Traffic-Sign-Classifier-Project/traffic-signs-data/train.p', 'rb') as f:
     data = pickle.load(f)
+
+## running on my local computer is super slow, reduced data size to get training concept working
+data['features'] = data['features'][0:400]
+data['labels'] = data['labels'][0:400]
 
 X_train, X_val, y_train, y_val = train_test_split(data['features'], data['labels'], test_size=0.33, random_state=0)
 
@@ -29,7 +33,7 @@ fc8W = tf.Variable(tf.truncated_normal(shape, stddev=1e-2))
 fc8b = tf.Variable(tf.zeros(nb_classes))
 logits = tf.nn.xw_plus_b(fc7, fc8W, fc8b)
 
-cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, labels)
+cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=labels)
 loss_op = tf.reduce_mean(cross_entropy)
 opt = tf.train.AdamOptimizer()
 train_op = opt.minimize(loss_op, var_list=[fc8W, fc8b])
